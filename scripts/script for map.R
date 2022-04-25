@@ -40,6 +40,7 @@ library(shiny)
 # Clear envirooment 
 rm(list = ls())
 
+
 # Set directories ----
 
 w.dir <- here()
@@ -64,7 +65,7 @@ st_crs(aus) <- "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
 # 2. Get extent of Western Australia ----
 
 # get extent from Australia map --
-wa.ext <- drawExtent()
+wa.ext <- raster::drawExtent()
 #extent(xmin = 112.2425, xmax = 118.1279 , ymin =-35.4557, ymax = -21.54461)
 
 # crop extent --
@@ -107,7 +108,7 @@ library(grDevices)
 pal <- choose_palette()
 
 # choose number of colors --
-cols <- pal(10)
+cols <- pal(4)
 
 # or choose your own colors --
 cs <- palette(c("#82CC6C","#007E7D","#255668","#EDEF5C"))
@@ -127,12 +128,12 @@ ri_region <- st_bbox(c(xmin = 115.4000, xmax = 115.5915,
 
 #### 5.2 create a base map ----
 rotto_map <- tm_shape(ri, bbox = ri_region) + tm_grid(n.y = 2, lines = F) + 
-  tm_polygons(border.col = "black", lwd = 2) +
+  tm_polygons(border.col = "black", lwd = 4) +
   tm_shape(sp_sites) + tm_dots(col = "Depth", size = 0.6, shape = 21, 
                                #tmap_options(max.categories = 4), 
                                palette = cs, legend.show = T) +
-  tm_compass(type = "4star", position = c(0.1, 0.15), size = 2) +
-  tm_scale_bar(breaks = c(0,1,2), text.size = 1, position = c(0.08, 0.001), size = 0.7) +
+  tm_compass(type = "arrow", position = c(0.1, 0.15), size = 2) +
+  tm_scale_bar(breaks = c(0,2,5), text.size = 1, position = c(0.08, 0.001), size = 0.7) +
   tm_layout(title = "Rottnest Island", legend.text.size = 1, legend.title.size = 1.2, legend.title.fontface = "bold", 
             title.size = 1, title.fontface = "bold",
             legend.position = c("left", "top"),  title.position = c(0.5,0.65), frame = T) 
@@ -161,7 +162,7 @@ wa_map <- tm_shape(wa) + tm_polygons(border.col = "black", lwd = 2) +
   tm_shape(ri_region) + # for the red box showing where Rottnest Island is
   tm_borders(col = "red", lwd = 3) +
   tm_layout(bg.color = "transparent",  frame = F,
-            title = "WA", title.size = 11, title.color = "black", title.position = c(0.29, 0.78)) 
+            title = "WA", title.size = 10, title.color = "black", title.position = c(0.29, 0.70)) 
 
 
 wa_map
@@ -178,6 +179,12 @@ a_map
 
 ###
 
+rotto_map
+
+wa_map
+
+a_map
+
 
 # 7. combine the three maps  ----
 # first arguments specify the centre location (x and y) and size (width and height) of inset map
@@ -185,7 +192,7 @@ a_map
 #### 7.1. check how it looks ----
 rotto_map
 
-print(wa_map, vp = viewport(x = 0.93, y = 0.43, w = 0.26, h= 0.26))
+print(wa_map, vp = viewport(x = 0.93, y = 0.43, w = 0.26, h = 0.26))
 vp1 = viewport(x = 0.94, y = 0.44, w = 0.25, h= 0.25)
 
 print(a_map, vp = viewport(x = 0.90, y = 0.63, w = 0.15, h= 0.15))
@@ -194,7 +201,7 @@ vp2 = viewport(x = 0.90, y = 0.63, w = 0.15, h= 0.15)
 
 
 #### 7.2. save the map with insets ----
-tmap_save(rotto_map, filename = paste(p.dir, "Rotto_map_your-name.png", sep ='/'), dpi = 300, 
+tmap_save(rotto_map, filename = paste(p.dir, "Rotto_map_Anita-test1.png", sep ='/'), dpi = 300, 
           height = 5.5, width = 5, units = "in",
           insets_tm = list(wa_map,a_map),  
           insets_vp = list(vp1, vp2))
@@ -205,9 +212,11 @@ tmap_save(rotto_map, filename = paste(p.dir, "Rotto_map_your-name.png", sep ='/'
 
 tmap_save(rotto_map, paste(p.dir, "rotto_map.png", sep = '/'))
 
-# tmap_save(a_map, paste(p.dir, "a_map.png", sep = '/'))
-# 
-# tmap_save(wa_map, paste(p.dir, "wa_map.png", sep = '/'))
+#map_save(a_map, paste(p.dir, "a_map.png", sep = '/'))
+
+#
+
+#tmap_save(wa_map, paste(p.dir, "wa_map.png", sep = '/'))
 
 
 
